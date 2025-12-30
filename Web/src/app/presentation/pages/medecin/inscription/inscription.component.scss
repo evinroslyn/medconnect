@@ -1,0 +1,39 @@
+// Styles pour le composant d'inscription médecin (modale)
+
+// Assure que la modale reste centrée et ne dépasse pas l'écran
+:host {
+  display: block;
+}
+
+// Animation d'entrée pour la modale
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Appliquer l'animation à la modale
+.fixed.inset-0 {
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+// Assure que le contenu scrollable fonctionne correctement
+.max-h-\[90vh\] {
+  max-height: 90vh;
+}
+
+// Style pour les champs de formulaire compacts
+input, select {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+// Réduire l'espacement dans les labels
+label {
+  margin-bottom: 0.375rem;
+}

@@ -1,0 +1,252 @@
+<div class="relative flex min-h-screen w-full flex-col font-display bg-white text-[#0d141b] dark:text-text-dark-primary">
+  <!-- Navbar -->
+  <app-navbar
+    title="MedConnect"
+    icon="shield_lock"
+    [navItems]="navItems"
+    [showLogout]="true"
+  ></app-navbar>
+
+  <!-- Loading State -->
+  <div *ngIf="loading && !patient" class="flex items-center justify-center min-h-screen">
+    <p class="text-lg">Chargement du profil...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="flex items-center justify-center min-h-screen">
+    <div class="text-center max-w-md">
+      <div class="mb-4">
+        <span class="material-symbols-outlined text-6xl text-red-500 mb-4">error</span>
+      </div>
+      <p class="text-red-600 dark:text-red-400 mb-2 font-semibold">Erreur de connexion</p>
+      <p class="text-text-light-primary dark:text-text-dark-primary mb-4 text-sm">{{ error }}</p>
+      <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4 text-left">
+        <p class="text-sm text-yellow-800 dark:text-yellow-200 font-medium mb-2">💡 Solution :</p>
+        <ol class="text-xs text-yellow-700 dark:text-yellow-300 list-decimal list-inside space-y-1">
+          <li>Ouvrez un terminal dans le dossier <code class="bg-yellow-100 dark:bg-yellow-900 px-1 rounded">Backend</code></li>
+          <li>Exécutez la commande : <code class="bg-yellow-100 dark:bg-yellow-900 px-1 rounded">npm run dev</code></li>
+          <li>Attendez que le serveur démarre (message "🚀 Serveur Med-Connect démarré")</li>
+          <li>Cliquez sur "Réessayer" ci-dessous</li>
+        </ol>
+      </div>
+      <button (click)="loadDossiers()" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+        Réessayer
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main *ngIf="patient && !loading" class="flex flex-1 min-h-0">
+    <!-- Sidebar -->
+    <aside class="flex h-full min-h-[calc(100vh-65px)] w-80 flex-col justify-between border-r border-border-dark bg-white dark:bg-background-dark p-6 sticky top-[65px]">
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-col items-center text-center gap-3">
+          <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-24 ring-4 ring-primary/20 bg-background-dark/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-text-light-primary dark:text-text-dark-primary text-4xl">person</span>
+          </div>
+          <div class="flex flex-col">
+            <h1 class="text-xl font-bold leading-normal text-text-light-primary dark:text-text-dark-primary">{{ patient.nom }}</h1>
+            <p class="text-sm font-normal leading-normal text-text-light-primary dark:text-text-dark-primary">ID: {{ patient.id }}</p>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-background-dark/20 text-primary">
+            <span class="material-symbols-outlined text-2xl">dashboard</span>
+            <p class="text-sm font-medium leading-normal">Tableau de bord</p>
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-dark/10">
+            <span class="material-symbols-outlined text-2xl">history</span>
+            <p class="text-sm font-medium leading-normal">Historique Médical Partagé</p>
+          </a>
+          <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background-dark/10">
+            <span class="material-symbols-outlined text-2xl">folder_open</span>
+            <p class="text-sm font-medium leading-normal">Documents</p>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col gap-4">
+        <button [routerLink]="['/medecin/chat', patient.id]" class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+          <span class="truncate">Envoyer un message</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Content Area -->
+    <div class="flex-1 py-8 px-8 overflow-auto min-h-0">
+      <div class="w-full flex flex-col gap-8">
+        <!-- Header -->
+        <div class="flex flex-wrap justify-between gap-3">
+          <div class="flex min-w-72 flex-col gap-2">
+            <p class="text-3xl font-black leading-tight tracking-[-0.033em]">Profil du Patient</p>
+            <p class="text-base font-normal leading-normal text-text-light-primary dark:text-text-dark-primary">Gérez et consultez le profil médical complet de {{ patient.nom }}.</p>
+          </div>
+        </div>
+
+        <!-- Patient Info Cards (Placeholder - can be removed or connected to real data) -->
+        <div class="overflow-x-auto -mx-8 px-8">
+          <div class="flex gap-4 min-w-max lg:grid lg:grid-cols-4 lg:min-w-0">
+            <div class="flex flex-col gap-2 rounded-lg p-6 border border-border-dark bg-white dark:bg-background-dark/50 min-w-[280px] flex-shrink-0 lg:min-w-0 lg:flex-shrink">
+              <p class="text-base font-medium leading-normal text-text-light-primary dark:text-text-dark-primary">Email</p>
+              <p class="tracking-light text-lg font-bold leading-tight text-text-light-primary dark:text-text-dark-primary break-words">{{ patient.mail }}</p>
+            </div>
+            <div class="flex flex-col gap-2 rounded-lg p-6 border border-border-dark bg-white dark:bg-background-dark/50 min-w-[280px] flex-shrink-0 lg:min-w-0 lg:flex-shrink">
+              <p class="text-base font-medium leading-normal text-text-light-primary dark:text-text-dark-primary">Téléphone</p>
+              <p class="tracking-light text-lg font-bold leading-tight text-text-light-primary dark:text-text-dark-primary">{{ patient.telephone }}</p>
+            </div>
+            <div class="flex flex-col gap-2 rounded-lg p-6 border border-border-dark bg-white dark:bg-background-dark/50 min-w-[280px] flex-shrink-0 lg:min-w-0 lg:flex-shrink" *ngIf="patient.dateNaissance">
+              <p class="text-base font-medium leading-normal text-text-light-primary dark:text-text-dark-primary">Date de naissance</p>
+              <p class="tracking-light text-lg font-bold leading-tight text-text-light-primary dark:text-text-dark-primary">{{ patient.dateNaissance | date:'dd/MM/yyyy' }}</p>
+            </div>
+            <div class="flex flex-col gap-2 rounded-lg p-6 border border-border-dark bg-white dark:bg-background-dark/50 min-w-[280px] flex-shrink-0 lg:min-w-0 lg:flex-shrink" *ngIf="patient.genre">
+              <p class="text-base font-medium leading-normal text-text-light-primary dark:text-text-dark-primary">Genre</p>
+              <p class="tracking-light text-lg font-bold leading-tight text-text-light-primary dark:text-text-dark-primary">{{ patient.genre }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Allergies Section -->
+        <div class="flex flex-col gap-4">
+          <div>
+            <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Allergies</h3>
+            <p class="text-sm text-text-light-primary dark:text-text-dark-primary mt-1">Liste des allergies connues du patient</p>
+          </div>
+
+          <div class="overflow-x-auto -mx-8 px-8">
+            <div class="flex gap-4 min-w-max md:grid md:grid-cols-2 lg:grid-cols-3 md:min-w-0">
+              <div
+                *ngFor="let allergie of allergies"
+                class="p-4 border border-border-dark rounded-lg bg-white dark:bg-background-dark/50 min-w-[320px] flex-shrink-0 md:min-w-0 md:flex-shrink"
+              >
+                <div class="flex items-start justify-between mb-2">
+                  <h4 class="font-semibold text-text-light-primary dark:text-text-dark-primary">{{ allergie.nom }}</h4>
+                </div>
+                <p *ngIf="allergie.description" class="text-sm text-text-light-primary dark:text-text-dark-primary opacity-80 mb-2">
+                  {{ allergie.description }}
+                </p>
+                <p *ngIf="allergie.dateDecouverte" class="text-xs text-text-light-primary dark:text-text-dark-primary opacity-60">
+                  Découverte le {{ allergie.dateDecouverte | date:'dd/MM/yyyy' }}
+                </p>
+              </div>
+              <div *ngIf="allergies.length === 0" class="col-span-full text-center py-8 text-text-light-primary dark:text-text-dark-primary opacity-60 min-w-full md:min-w-0">
+                Aucune allergie enregistrée
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Traitements Section -->
+        <div class="flex flex-col gap-4">
+          <div>
+            <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Traitements</h3>
+            <p class="text-sm text-text-light-primary dark:text-text-dark-primary mt-1">Liste des traitements médicaux en cours ou terminés</p>
+          </div>
+
+          <div class="overflow-x-auto -mx-8 px-8">
+            <div class="flex gap-4 min-w-max md:grid md:grid-cols-2 lg:grid-cols-3 md:min-w-0">
+              <div
+                *ngFor="let traitement of traitements"
+                class="p-4 border border-border-dark rounded-lg bg-white dark:bg-background-dark/50 min-w-[320px] flex-shrink-0 md:min-w-0 md:flex-shrink"
+              >
+                <div class="flex items-start justify-between mb-2">
+                  <h4 class="font-semibold text-text-light-primary dark:text-text-dark-primary">{{ traitement.nom }}</h4>
+                </div>
+                <p *ngIf="traitement.description" class="text-sm text-text-light-primary dark:text-text-dark-primary opacity-80 mb-2">
+                  {{ traitement.description }}
+                </p>
+                <p *ngIf="traitement.posologie" class="text-sm text-text-light-primary dark:text-text-dark-primary opacity-80 mb-2">
+                  <span class="font-medium">Posologie:</span> {{ traitement.posologie }}
+                </p>
+                <div class="text-xs text-text-light-primary dark:text-text-dark-primary opacity-60 space-y-1">
+                  <p>Début: {{ traitement.dateDebut | date:'dd/MM/yyyy' }}</p>
+                  <p *ngIf="traitement.dateFin">Fin: {{ traitement.dateFin | date:'dd/MM/yyyy' }}</p>
+                  <p *ngIf="!traitement.dateFin" class="text-green-600">En cours</p>
+                  <p *ngIf="traitement.medecinPrescripteur">Prescrit par: {{ traitement.medecinPrescripteur }}</p>
+                </div>
+              </div>
+              <div *ngIf="traitements.length === 0" class="col-span-full text-center py-8 text-text-light-primary dark:text-text-dark-primary opacity-60 min-w-full md:min-w-0">
+                Aucun traitement enregistré
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shared Medical History Section -->
+        <div class="flex flex-col gap-4">
+          <div>
+            <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Historique Médical Partagé</h3>
+            <p class="text-sm text-text-light-primary dark:text-text-dark-primary mt-1">Consultez l'historique médical partagé par le patient</p>
+          </div>
+
+          <!-- Filters and Search -->
+          <div class="flex flex-col sm:flex-row gap-2 items-center">
+            <div class="relative w-full sm:w-auto">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-light-primary dark:text-text-dark-primary">search</span>
+              <input
+                class="w-full sm:w-48 h-10 pl-10 pr-4 py-2 bg-white dark:bg-background-dark/50 border border-border-dark rounded-md focus:ring-primary focus:border-primary text-text-light-primary dark:text-text-dark-primary"
+                placeholder="Rechercher des dossiers..."
+                type="text"
+                [(ngModel)]="searchTerm"
+                (input)="applyFilters()"
+              />
+            </div>
+            <select
+              class="w-full sm:w-auto h-10 px-3 py-2 bg-white dark:bg-background-dark/50 border border-border-dark rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-text-light-primary dark:text-text-dark-primary"
+              [(ngModel)]="filtres.type"
+              (change)="applyFilters()"
+            >
+              <option value="">Tous les types</option>
+              <option *ngFor="let type of typesEnregistrement" [value]="type">{{ type }}</option>
+            </select>
+            <input
+              class="w-full sm:w-auto h-10 px-3 py-2 bg-white dark:bg-background-dark/50 border border-border-dark rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-text-light-primary dark:text-text-dark-primary"
+              type="date"
+              [(ngModel)]="filtres.dateDebut"
+              (change)="applyFilters()"
+            />
+            <input
+              class="w-full sm:w-auto h-10 px-3 py-2 bg-white dark:bg-background-dark/50 border border-border-dark rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-text-light-primary dark:text-text-dark-primary"
+              type="date"
+              [(ngModel)]="filtres.dateFin"
+              (change)="applyFilters()"
+            />
+          </div>
+
+          <!-- Dossiers Table -->
+          <div class="overflow-x-auto bg-white dark:bg-background-dark/50 border border-border-dark rounded-lg">
+            <table class="w-full text-sm text-left">
+              <thead class="text-xs uppercase bg-background-dark">
+                <tr>
+                  <th class="px-6 py-3 text-text-dark-primary" scope="col">TITRE DU DOSSIER</th>
+                  <th class="px-6 py-3 text-text-dark-primary" scope="col">TYPE</th>
+                  <th class="px-6 py-3 text-text-dark-primary" scope="col">DATE</th>
+                  <th class="px-6 py-3 text-text-dark-primary" scope="col">SOURCE</th>
+                  <th class="px-6 py-3 text-right text-text-dark-primary" scope="col">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white dark:bg-background-dark/30 divide-y divide-border-dark">
+                <tr *ngIf="dossiers.length === 0">
+                  <td colspan="5" class="px-6 py-4 text-center text-text-light-primary dark:text-text-dark-primary">Aucun dossier médical disponible</td>
+                </tr>
+                <tr *ngFor="let dossier of dossiers" class="hover:bg-background-dark/10 transition-colors">
+                  <td class="px-6 py-4 font-medium whitespace-nowrap text-text-light-primary dark:text-text-dark-primary">{{ dossier.titre }}</td>
+                  <td class="px-6 py-4 text-text-light-primary dark:text-text-dark-primary">{{ dossier.type || 'N/A' }}</td>
+                  <td class="px-6 py-4 text-text-light-primary dark:text-text-dark-primary">{{ dossier.date | date:'yyyy-MM-dd' }}</td>
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-2">
+                      <span class="text-text-light-primary dark:text-text-dark-primary">Téléchargé par le patient</span>
+                      <span class="material-symbols-outlined text-base text-text-light-primary dark:text-text-dark-primary" title="Lecture seule. Ce dossier a été téléchargé par le patient et ne peut pas être modifié.">lock</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <button (click)="viewDossier(dossier.id)" class="font-medium text-primary hover:underline">Voir</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>

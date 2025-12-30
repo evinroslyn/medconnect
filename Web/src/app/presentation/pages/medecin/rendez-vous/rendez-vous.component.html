@@ -1,0 +1,242 @@
+<div class="flex flex-1 flex-col overflow-y-auto bg-white">
+  <!-- Header -->
+  <header class="flex flex-col h-auto shrink-0 border-b border-border-dark bg-background-dark px-8 py-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-bold text-text-dark-primary">Rendez-vous</h2>
+      </div>
+    <div class="flex flex-1 items-center justify-end gap-4">
+      <button class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden bg-transparent hover:bg-background-dark/20">
+        <span class="material-symbols-outlined text-text-dark-primary">notifications</span>
+      </button>
+      <div
+        *ngIf="userProfile?.photoProfil"
+        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-white/20"
+        [style.background-image]="'url(' + getDocumentUrl(userProfile.photoProfil) + ')'"
+      ></div>
+      <div
+        *ngIf="!userProfile?.photoProfil"
+        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-background-dark/20 flex items-center justify-center border-2 border-white/20"
+      >
+        <span class="material-symbols-outlined text-white text-xl">person</span>
+      </div>
+    </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8">
+    <!-- Section: Disponibilités -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Mes Disponibilités</h3>
+          <p class="text-sm text-text-light-primary/80 dark:text-text-dark-primary/80 mt-1">Définissez vos créneaux disponibles pour les rendez-vous</p>
+        </div>
+        <button
+          (click)="showForm = !showForm"
+          class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          <span class="material-symbols-outlined text-sm">add</span>
+          <span>{{ showForm ? 'Annuler' : 'Ajouter Disponibilité' }}</span>
+        </button>
+      </div>
+      <!-- Form -->
+    <div *ngIf="showForm" class="mb-6 border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-6 rounded-lg shadow-sm">
+      <h4 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary mb-4">Nouvelle Disponibilité</h4>
+      <form [formGroup]="disponibiliteForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Jour</label>
+            <input
+              type="date"
+              formControlName="jour"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Type de Consultation</label>
+            <select
+              formControlName="typeConsultation"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            >
+              <option value="Présentiel">Présentiel</option>
+              <option value="Téléconsultation">Téléconsultation</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Heure de Début</label>
+            <input
+              type="time"
+              formControlName="heureDebut"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Heure de Fin</label>
+            <input
+              type="time"
+              formControlName="heureFin"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Lieu</label>
+            <input
+              type="text"
+              formControlName="lieu"
+              placeholder="Adresse du lieu"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Centre Médical</label>
+            <input
+              type="text"
+              formControlName="centreMedical"
+              placeholder="Nom du centre médical"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <input
+            type="checkbox"
+            formControlName="actif"
+            id="actif"
+            class="h-4 w-4 text-primary focus:ring-primary"
+          />
+          <label for="actif" class="text-sm text-text-light-primary dark:text-text-dark-primary">Disponibilité active</label>
+        </div>
+        <div class="flex gap-3">
+          <button
+            type="submit"
+            [disabled]="disponibiliteForm.invalid || loading"
+            class="px-6 py-2 bg-primary text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            {{ loading ? 'Création...' : 'Créer Disponibilité' }}
+          </button>
+          <button
+            type="button"
+            (click)="toggleForm()"
+            class="px-6 py-2 border border-border-light dark:border-border-dark text-text-light-primary dark:text-text-dark-primary rounded-lg hover:bg-background-light dark:hover:bg-background-dark transition-colors"
+          >
+            Annuler
+          </button>
+        </div>
+      </form>
+    </div>
+
+      <!-- Error Message -->
+      <div *ngIf="error" class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+        <p class="text-sm text-red-800 dark:text-red-200">{{ error }}</p>
+      </div>
+
+      <!-- Disponibilités List -->
+      <div *ngIf="loading && disponibilites.length === 0" class="text-center py-12">
+        <p class="text-text-light-primary dark:text-text-dark-primary">Chargement des disponibilités...</p>
+      </div>
+
+      <div *ngIf="!loading && disponibilites.length === 0" class="text-center py-12 border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
+        <p class="text-text-light-primary dark:text-text-dark-primary">Aucune disponibilité enregistrée</p>
+      </div>
+
+      <div *ngIf="disponibilites.length > 0" class="space-y-4">
+        <div
+          *ngFor="let dispo of disponibilites"
+          class="border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-6"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-2">
+                <h4 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">
+                  {{ getJourLabel(dispo.jour) }}
+                </h4>
+                <span
+                  [class]="dispo.actif ? 'bg-status-green/10 text-status-green px-2 py-1 text-xs font-medium' : 'bg-background-dark/20 text-text-light-primary dark:text-text-dark-primary px-2 py-1 text-xs font-medium'"
+                >
+                  {{ dispo.actif ? 'Active' : 'Inactive' }}
+                </span>
+              </div>
+              <div class="space-y-1 text-sm text-text-light-primary dark:text-text-dark-primary">
+                <p><span class="font-medium">Heure:</span> {{ dispo.heureDebut }} - {{ dispo.heureFin }}</p>
+                <p><span class="font-medium">Type:</span> {{ dispo.typeConsultation }}</p>
+                <p *ngIf="dispo.lieu"><span class="font-medium">Lieu:</span> {{ dispo.lieu }}</p>
+                <p *ngIf="dispo.centreMedical"><span class="font-medium">Centre Médical:</span> {{ dispo.centreMedical }}</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button
+                (click)="toggleDisponibilite(dispo)"
+                [class]="dispo.actif ? 'text-orange-600 dark:text-orange-400' : 'text-status-green'"
+                class="px-3 py-1 text-sm font-medium hover:bg-background-light dark:hover:bg-background-dark/50 rounded-lg transition-colors"
+              >
+                {{ dispo.actif ? 'Désactiver' : 'Activer' }}
+              </button>
+              <button
+                (click)="deleteDisponibilite(dispo.id!)"
+                class="px-3 py-1 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-background-light dark:hover:bg-background-dark/50"
+              >
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rendez-vous List -->
+    <div class="mt-8">
+      <div class="mb-4">
+        <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Mes Rendez-vous</h3>
+        <p class="text-sm text-text-light-primary/80 dark:text-text-dark-primary/80 mt-1">Consultez vos rendez-vous planifiés et passés</p>
+      </div>
+
+      <div *ngIf="loadingRendezVous && rendezVous.length === 0" class="text-center py-12">
+        <p class="text-text-light-primary dark:text-text-dark-primary">Chargement des rendez-vous...</p>
+      </div>
+
+      <div *ngIf="!loadingRendezVous && rendezVous.length === 0" class="text-center py-12 border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
+        <p class="text-text-light-primary dark:text-text-dark-primary">Aucun rendez-vous enregistré</p>
+      </div>
+
+      <div *ngIf="rendezVous.length > 0" class="space-y-4">
+        <div
+          *ngFor="let rdv of rendezVous"
+          class="border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-6 rounded-lg shadow-sm mb-4"
+        >
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-2">
+                <h4 class="text-lg font-semibold text-text-light-primary dark:text-text-dark-primary">
+                  {{ formatDate(rdv.date) }}
+                </h4>
+                <span
+                  [class]="rdv.statut === 'Planifié' ? 'bg-background-dark/20 text-text-light-primary dark:text-text-dark-primary' : rdv.statut === 'Terminé' ? 'bg-status-green/10 text-status-green' : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-200'"
+                  class="px-2 py-1 text-xs font-medium rounded"
+                >
+                  {{ rdv.statut }}
+                </span>
+              </div>
+              <div class="space-y-1 text-sm text-text-light-primary dark:text-text-dark-primary">
+                <p><span class="font-medium">Type:</span> {{ rdv.type }}</p>
+                <p *ngIf="rdv.duree"><span class="font-medium">Durée:</span> {{ rdv.duree }} minutes</p>
+                <p *ngIf="rdv.notes"><span class="font-medium">Notes:</span> {{ rdv.notes }}</p>
+                <p><span class="font-medium">Patient ID:</span> {{ rdv.idPatient }}</p>
+              </div>
+            </div>
+            <div class="flex gap-2" *ngIf="rdv.statut === 'Planifié'">
+              <button
+                (click)="annulerRendezVous(rdv.id)"
+                class="px-3 py-1 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-background-light dark:hover:bg-background-dark/50"
+              >
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+

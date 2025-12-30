@@ -1,0 +1,70 @@
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-dark px-4 py-3 bg-background-dark sticky top-0 z-10">
+  <h2 class="text-text-dark-primary text-xl font-bold leading-tight tracking-[-0.015em]">Patient Management</h2>
+  <div class="flex flex-1 justify-end gap-4 items-center">
+    <label class="relative flex-col min-w-40 !h-10 max-w-sm hidden md:flex">
+      <span class="material-symbols-outlined text-text-dark-secondary absolute left-3 top-1/2 -translate-y-1/2">search</span>
+      <input
+        [(ngModel)]="searchTerm"
+        class="form-input w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-dark-primary focus:outline-0 focus:ring-2 focus:ring-primary/50 border-border-dark bg-background-dark/50 h-full placeholder:text-text-dark-secondary pl-10 pr-4 text-sm font-normal leading-normal"
+        placeholder="Search patients..."
+        type="text"
+      />
+    </label>
+    <button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-transparent text-text-dark-secondary hover:bg-background-dark/20 hover:text-primary transition-colors">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-background-dark/20"></div>
+  </div>
+</header>
+
+<div class="p-4 flex-1">
+  <div class="max-w-7xl mx-auto">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center p-8 text-slate-500">
+      <p>Chargement des patients...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="rounded-md bg-red-50 dark:bg-red-900/20 p-4 mb-6">
+      <p class="text-sm text-red-800 dark:text-red-200">{{ error }}</p>
+    </div>
+
+    <!-- Patients List -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        *ngFor="let patient of patients"
+        class="flex flex-col overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 p-4"
+      >
+        <div class="flex items-center gap-3 mb-3">
+          <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 bg-background-dark/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-lg">person</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-slate-900 dark:text-slate-50 text-sm font-semibold leading-normal truncate">{{ patient.nom || (patient.mail ? patient.mail.split('@')[0] : 'N/A') }}</p>
+            <p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal truncate">{{ patient.mail }}</p>
+          </div>
+        </div>
+        <div class="space-y-1.5 text-xs">
+          <div class="flex items-center justify-between">
+            <p class="text-slate-500 dark:text-slate-400">ID</p>
+            <p class="text-slate-900 dark:text-slate-50 font-medium truncate ml-2 text-right">{{ patient.id.substring(0, 8) }}...</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <p class="text-slate-500 dark:text-slate-400">Date de naissance</p>
+            <p class="text-slate-900 dark:text-slate-50 font-medium">{{ patient.dateNaissance | date:'short' }}</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <p class="text-slate-500 dark:text-slate-400">Téléphone</p>
+            <p class="text-slate-900 dark:text-slate-50 font-medium">{{ patient.telephone }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && patients.length === 0" class="col-span-full text-center p-8 text-slate-500">
+        <p>Aucun patient trouvé</p>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,115 @@
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-dark px-4 py-3 bg-background-dark sticky top-0 z-10">
+  <h2 class="text-text-dark-primary text-xl font-bold leading-tight tracking-[-0.015em]">Dashboard</h2>
+  <div class="flex flex-1 justify-end gap-4 items-center">
+    <button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-transparent text-text-dark-secondary hover:bg-background-dark/20 hover:text-primary transition-colors">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-background-dark/20"></div>
+  </div>
+</header>
+
+<div class="p-4 flex-1">
+  <div class="max-w-7xl mx-auto">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center p-8 text-text-dark-secondary">
+      <p>Chargement des statistiques...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="rounded-md bg-red-50 dark:bg-red-900/20 p-4 mb-6">
+      <p class="text-sm text-red-800 dark:text-red-200">{{ error }}</p>
+    </div>
+
+    <!-- Statistics -->
+    <div *ngIf="statistics && !loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Médecins en attente -->
+      <div class="rounded-xl border border-border-dark bg-white dark:bg-background-dark/50 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-text-dark-secondary text-sm font-medium">Médecins en attente</p>
+            <p class="text-3xl font-bold text-text-dark-primary mt-2">{{ statistics.medecins?.enAttente || 0 }}</p>
+          </div>
+          <span class="material-symbols-outlined text-4xl text-yellow-500">pending</span>
+        </div>
+      </div>
+
+      <!-- Médecins validés -->
+      <div class="rounded-xl border border-border-dark bg-white dark:bg-background-dark/50 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-text-dark-secondary text-sm font-medium">Médecins validés</p>
+            <p class="text-3xl font-bold text-text-dark-primary mt-2">{{ statistics.medecins?.valides || 0 }}</p>
+          </div>
+          <span class="material-symbols-outlined text-4xl text-green-500">check_circle</span>
+        </div>
+      </div>
+
+      <!-- Total Patients -->
+      <div class="rounded-xl border border-border-dark bg-white dark:bg-background-dark/50 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-text-dark-secondary text-sm font-medium">Total Patients</p>
+            <p class="text-3xl font-bold text-text-dark-primary mt-2">{{ statistics.patients?.total || 0 }}</p>
+          </div>
+          <span class="material-symbols-outlined text-4xl text-primary">groups</span>
+        </div>
+      </div>
+
+      <!-- Total Administrateurs -->
+      <div class="rounded-xl border border-border-dark bg-white dark:bg-background-dark/50 p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-text-dark-secondary text-sm font-medium">Administrateurs</p>
+            <p class="text-3xl font-bold text-text-dark-primary mt-2">{{ statistics.administrateurs?.total || 0 }}</p>
+          </div>
+          <span class="material-symbols-outlined text-4xl text-purple-500">admin_panel_settings</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="rounded-xl border border-border-dark bg-white dark:bg-background-dark/50 p-6">
+        <h3 class="text-lg font-semibold text-text-dark-primary mb-4">Actions rapides</h3>
+        <div class="space-y-3">
+          <a 
+            [routerLink]="['/admin/verification']"
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-background-dark/20 transition-colors text-text-dark-primary"
+          >
+            <span class="material-symbols-outlined">verified_user</span>
+            <span class="text-sm font-medium">Vérifier les médecins</span>
+          </a>
+          <a 
+            [routerLink]="['/admin/patients']"
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-background-dark/20 transition-colors text-text-dark-primary"
+          >
+            <span class="material-symbols-outlined">groups</span>
+            <span class="text-sm font-medium">Gérer les patients</span>
+          </a>
+          <a 
+            [routerLink]="['/admin/users']"
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-background-dark/20 transition-colors text-text-dark-primary"
+          >
+            <span class="material-symbols-outlined">manage_accounts</span>
+            <span class="text-sm font-medium">Gérer les utilisateurs</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-xl border border-border-dark bg-white dark:bg-background-dark/50 p-6" *ngIf="statistics && !loading">
+        <h3 class="text-lg font-semibold text-text-dark-primary mb-4">Statistiques récentes</h3>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-text-dark-secondary">Total médecins</span>
+            <span class="text-sm font-semibold text-text-dark-primary">{{ statistics?.medecins?.total || 0 }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-text-dark-secondary">Médecins rejetés</span>
+            <span class="text-sm font-semibold text-text-dark-primary">{{ statistics?.medecins?.rejetes || 0 }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

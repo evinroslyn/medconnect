@@ -1,0 +1,360 @@
+<div class="flex min-h-screen w-full font-display bg-white text-text-light-primary relative overflow-hidden">
+  <!-- Contenu principal -->
+  <div class="relative z-10 flex w-full min-h-screen">
+    <!-- Section gauche - Image -->
+    <div class="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 border-r border-primary/20 relative overflow-hidden bg-white">
+      <!-- Image de fond pour la section gauche (sans flou) -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <img src="/acceuil 2.png" alt="" class="w-full h-full object-contain" onerror="this.style.display='none';" />
+      </div>
+    </div>
+
+    <!-- Section droite - Formulaire d'inscription -->
+    <div class="flex-1 flex items-center justify-center p-8 lg:p-12 relative overflow-hidden bg-white">
+
+      <div class="relative z-10 w-full max-w-4xl space-y-6 overflow-y-auto max-h-[90vh]">
+        <!-- Titre pour mobile -->
+        <div class="lg:hidden text-center mb-8">
+          <h2 class="text-4xl font-bold text-text-dark-primary mb-4">Rejoignez-nous</h2>
+        </div>
+
+        <div class="text-center lg:text-left mb-6">
+          <h2 class="text-4xl font-bold text-text-light-primary mb-2">Inscription</h2>
+          <p class="text-sm text-text-light-primary/80 mt-1">Remplissez le formulaire ci-dessous pour créer votre compte</p>
+        </div>
+
+        <!-- Message de succès -->
+        <div *ngIf="success" class="rounded-md bg-green-50 dark:bg-green-900/20 p-4 mb-4 border border-green-200 dark:border-green-800">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-green-600 dark:text-green-400 text-2xl">check_circle</span>
+            <div class="flex-1">
+              <h3 class="text-base font-semibold text-green-800 dark:text-green-200 mb-1">Demande soumise avec succès !</h3>
+              <p class="text-xs text-green-700 dark:text-green-300 mb-3">
+                Votre demande d'inscription a été soumise avec succès. Un administrateur va examiner votre demande et vos documents.
+              </p>
+              <a
+                routerLink="/login"
+                class="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-white hover:bg-primary/90 transition-colors"
+              >
+                <span class="material-symbols-outlined text-sm">login</span>
+                Aller à la page de connexion
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulaire -->
+        <form [formGroup]="inscriptionForm" (ngSubmit)="onSubmit()" *ngIf="!success" >
+          <!-- Grille deux colonnes -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Nom Complet -->
+            <div>
+              <label class="block text-sm font-medium text-text-light-primary mb-2" for="nom">
+                Nom Complet *
+              </label>
+              <input
+                formControlName="nom"
+                class="block w-full bg-white border border-primary/30 rounded-lg py-2.5 px-4 text-sm text-text-light-primary placeholder:text-text-light-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                id="nom"
+                name="nom"
+                placeholder="Entrez votre nom complet"
+                required=""
+                type="text"
+              />
+            </div>
+
+            <!-- Spécialité Médicale -->
+            <div>
+              <label class="block text-sm font-medium text-text-light-primary mb-2" for="specialite">
+                Spécialité Médicale *
+              </label>
+              <select
+                formControlName="specialite"
+                class="block w-full bg-white border border-primary/30 rounded-lg py-2.5 px-4 text-sm text-text-light-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                id="specialite"
+                name="specialite"
+                required=""
+              >
+                <option value="">Sélectionnez votre spécialité</option>
+                <option value="Cardiologie">Cardiologie</option>
+                <option value="Dermatologie">Dermatologie</option>
+                <option value="Gynécologie">Gynécologie</option>
+                <option value="Neurologie">Neurologie</option>
+                <option value="Pédiatrie">Pédiatrie</option>
+                <option value="Médecine Générale">Médecine Générale</option>
+                <option value="Chirurgie">Chirurgie</option>
+                <option value="Radiologie">Radiologie</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+
+            <!-- Années d'Expérience -->
+            <div>
+              <label class="block text-sm font-medium text-text-light-primary mb-2" for="anneesExperience">
+                Années d'Expérience *
+              </label>
+              <input
+                formControlName="anneesExperience"
+                class="block w-full bg-white border border-primary/30 rounded-lg py-2.5 px-4 text-sm text-text-light-primary placeholder:text-text-light-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                id="anneesExperience"
+                name="anneesExperience"
+                placeholder="Nombre d'années"
+                required=""
+                type="number"
+                min="0"
+              />
+            </div>
+
+            <!-- Numéro de Licence -->
+            <div>
+              <label class="block text-sm font-medium text-text-light-primary mb-2 flex items-center gap-2" for="numeroLicence">
+                Numéro de Licence *
+                <span class="material-symbols-outlined text-sm text-text-light-primary/60 cursor-help" title="Le numéro de licence tel qu'il apparaît sur votre document officiel">help</span>
+              </label>
+              <input
+                formControlName="numeroLicence"
+                class="block w-full bg-white border border-primary/30 rounded-lg py-2.5 px-4 text-sm text-text-light-primary placeholder:text-text-light-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                id="numeroLicence"
+                name="numeroLicence"
+                placeholder="ex: G1234567"
+                required=""
+                type="text"
+              />
+            </div>
+
+            <!-- État / Pays d'Émission -->
+            <div>
+              <label class="block text-sm font-medium text-text-light-primary mb-2" for="etatPays">
+                État / Pays d'Émission *
+              </label>
+              <select
+                formControlName="etatPays"
+                class="block w-full bg-white border border-primary/30 rounded-lg py-2.5 px-4 text-sm text-text-light-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                id="etatPays"
+                name="etatPays"
+                required=""
+              >
+                <option value="">Sélectionnez un état ou pays</option>
+                <option value="Cameroun">Cameroun</option>
+                <option value="Gabon">Gabon</option>
+                <option value="Congo">Congo</option>
+                <option value="Tchad">Tchad</option>
+                <option value="RCA">RCA</option>
+                <option value="Guinée Équatoriale">Guinée Équatoriale</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+
+            <!-- Pays -->
+            <div>
+              <label class="block text-sm font-medium text-text-light-primary mb-2" for="pays">
+                Pays *
+              </label>
+              <select
+                formControlName="pays"
+                class="block w-full bg-white border border-primary/30 rounded-lg py-2.5 px-4 text-sm text-text-light-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                id="pays"
+                name="pays"
+                required=""
+              >
+                <option value="">Sélectionnez un pays</option>
+                <option value="Cameroun">Cameroun</option>
+                <option value="Gabon">Gabon</option>
+                <option value="Congo">Congo</option>
+                <option value="Tchad">Tchad</option>
+                <option value="RCA">RCA</option>
+                <option value="Guinée Équatoriale">Guinée Équatoriale</option>
+                <option value="France">France</option>
+                <option value="Belgique">Belgique</option>
+                <option value="Suisse">Suisse</option>
+                <option value="Canada">Canada</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label class="block text-sm font-medium text-text-light-primary mb-2" for="mail">Email *</label>
+              <input
+                formControlName="mail"
+                autocomplete="email"
+                class="block w-full bg-white border border-primary/30 rounded-lg py-2.5 px-4 text-sm text-text-light-primary placeholder:text-text-light-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                id="mail"
+                name="mail"
+                placeholder="monnom@example.com"
+                required=""
+                type="email"
+              />
+            </div>
+
+            <!-- Téléphone -->
+            <div>
+              <label class="block text-sm font-medium text-text-light-primary mb-2" for="telephone">Téléphone *</label>
+              <input
+                formControlName="telephone"
+                autocomplete="tel"
+                class="block w-full bg-white border border-primary/30 rounded-lg py-2.5 px-4 text-sm text-text-light-primary placeholder:text-text-light-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                id="telephone"
+                name="telephone"
+                placeholder="+237612345678"
+                required=""
+                type="tel"
+              />
+            </div>
+
+            <!-- Adresse -->
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-text-light-primary mb-2" for="adresse">Adresse</label>
+              <input
+                formControlName="adresse"
+                class="block w-full bg-white border border-primary/30 rounded-lg py-2.5 px-4 text-sm text-text-light-primary placeholder:text-text-light-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition"
+                id="adresse"
+                name="adresse"
+                placeholder="123 Rue Example, Ville"
+                type="text"
+              />
+            </div>
+          </div>
+
+          <!-- Upload de fichiers -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Document d'identité -->
+            <div>
+              <label class="block text-sm font-medium text-text-light-primary mb-2">
+                Document d'identité *
+              </label>
+              <input
+                type="file"
+                accept="image/*,application/pdf"
+                (change)="onFileSelected($event, 'documentIdentite')"
+                class="hidden"
+                id="documentIdentite"
+                #documentIdentiteInput
+              />
+              <div class="flex items-center gap-3">
+                <label
+                  for="documentIdentite"
+                  class="flex-1 cursor-pointer border border-primary/30 bg-white rounded-lg py-2.5 px-4 text-sm text-text-light-primary hover:bg-gray-50 transition-colors text-center truncate"
+                >
+                  <span class="material-symbols-outlined text-base inline-block mr-2">upload_file</span>
+                  {{ documentIdentiteFile ? (documentIdentiteFile.name.length > 15 ? documentIdentiteFile.name.substring(0, 15) + '...' : documentIdentiteFile.name) : 'Choisir fichier' }}
+                </label>
+                <button
+                  *ngIf="documentIdentiteFile"
+                  type="button"
+                  (click)="removeFile('documentIdentite'); documentIdentiteInput.value = ''"
+                  class="text-red-400 hover:text-red-300 p-2"
+                >
+                  <span class="material-symbols-outlined text-base">delete</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Diplôme -->
+            <div>
+              <label class="block text-sm font-medium text-text-light-primary mb-2">
+                Diplôme *
+              </label>
+              <input
+                type="file"
+                accept="image/*,application/pdf"
+                (change)="onFileSelected($event, 'diplome')"
+                class="hidden"
+                id="diplome"
+                #diplomeInput
+              />
+              <div class="flex items-center gap-3">
+                <label
+                  for="diplome"
+                  class="flex-1 cursor-pointer border border-primary/30 bg-white rounded-lg py-2.5 px-4 text-sm text-text-light-primary hover:bg-gray-50 transition-colors text-center truncate"
+                >
+                  <span class="material-symbols-outlined text-base inline-block mr-2">upload_file</span>
+                  {{ diplomeFile ? (diplomeFile.name.length > 15 ? diplomeFile.name.substring(0, 15) + '...' : diplomeFile.name) : 'Choisir fichier' }}
+                </label>
+                <button
+                  *ngIf="diplomeFile"
+                  type="button"
+                  (click)="removeFile('diplome'); diplomeInput.value = ''"
+                  class="text-red-400 hover:text-red-300 p-2"
+                >
+                  <span class="material-symbols-outlined text-base">delete</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Photo de profil -->
+            <div>
+              <label class="block text-sm font-medium text-text-light-primary mb-2">
+                Photo de profil (optionnel)
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                (change)="onFileSelected($event, 'photoProfil')"
+                class="hidden"
+                id="photoProfil"
+                #photoProfilInput
+              />
+              <div class="flex items-center gap-3">
+                <label
+                  for="photoProfil"
+                  class="flex-1 cursor-pointer border border-primary/30 bg-white rounded-lg py-2.5 px-4 text-sm text-text-light-primary hover:bg-gray-50 transition-colors text-center truncate"
+                >
+                  <span class="material-symbols-outlined text-base inline-block mr-2">upload_file</span>
+                  {{ photoProfilFile ? (photoProfilFile.name.length > 15 ? photoProfilFile.name.substring(0, 15) + '...' : photoProfilFile.name) : 'Choisir photo' }}
+                </label>
+                <button
+                  *ngIf="photoProfilFile"
+                  type="button"
+                  (click)="removeFile('photoProfil'); photoProfilInput.value = ''"
+                  class="text-red-400 hover:text-red-300 p-2"
+                >
+                  <span class="material-symbols-outlined text-base">delete</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Message d'erreur -->
+          <div *ngIf="error" class="bg-red-900/30 border border-red-800/50 p-4 rounded-md">
+            <div class="flex items-start gap-2">
+              <span class="material-symbols-outlined text-red-400 text-xl flex-shrink-0">error</span>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-red-200 mb-2">Erreur d'inscription</p>
+                <pre class="text-xs text-red-300 whitespace-pre-wrap font-sans">{{ error }}</pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- Boutons -->
+          <div class="flex items-center justify-end gap-4 pt-4">
+            <a
+              routerLink="/login"
+              class="flex items-center justify-center border border-primary/30 px-6 py-2.5 text-sm font-semibold text-text-light-primary hover:bg-gray-50 transition-colors rounded-lg"
+            >
+              Annuler
+            </a>
+            <button
+              [disabled]="!inscriptionForm.valid || loading"
+              class="bg-primary px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:bg-primary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+              type="submit"
+            >
+              <span *ngIf="loading">Inscription en cours...</span>
+              <span *ngIf="!loading">S'inscrire</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Lien vers connexion -->
+        <div class="text-center">
+          <p class="text-sm text-text-light-primary/80">
+            Déjà un compte ?
+            <a routerLink="/login" class="font-medium text-primary hover:text-primary-light cursor-pointer transition-colors">
+              Se connecter ici
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

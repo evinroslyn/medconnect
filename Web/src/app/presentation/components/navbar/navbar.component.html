@@ -1,0 +1,41 @@
+<header class="fixed top-0 z-50 left-0 right-0 lg:left-64 flex h-16 shrink-0 items-center justify-between border-b border-border-dark px-6 bg-background-dark">
+  <div class="flex items-center gap-4 text-text-dark-primary">
+    <span class="material-symbols-outlined text-primary text-2xl">{{ icon }}</span>
+    <div class="flex flex-col">
+      <h2 class="text-lg font-bold text-text-dark-primary">{{ title }}</h2>
+      <p *ngIf="subtitle" class="text-xs text-text-dark-secondary">{{ subtitle }}</p>
+    </div>
+  </div>
+  <div class="flex flex-1 justify-end gap-6">
+    <nav class="flex items-center gap-8">
+      <a
+        *ngFor="let item of navItems"
+        [routerLink]="item.path"
+        [class.font-semibold]="isActive(item.path)"
+        [class.text-primary]="isActive(item.path)"
+        [class.text-text-dark-primary]="!isActive(item.path)"
+        class="text-sm font-medium hover:text-primary transition-colors"
+      >
+        {{ item.label }}
+      </a>
+    </nav>
+    <div
+      *ngIf="userProfile?.photoProfil"
+      class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-white/20"
+      [style.background-image]="'url(' + getDocumentUrl(userProfile.photoProfil) + ')'"
+    ></div>
+    <div
+      *ngIf="!userProfile?.photoProfil"
+      class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-background-dark/20 flex items-center justify-center border-2 border-white/20"
+    >
+      <span class="material-symbols-outlined text-white text-xl">person</span>
+    </div>
+    <button
+      *ngIf="showLogout"
+      (click)="logout()"
+      class="text-sm font-medium text-text-dark-primary hover:text-white transition-colors"
+    >
+      <span class="material-symbols-outlined text-xl">logout</span>
+    </button>
+  </div>
+</header>

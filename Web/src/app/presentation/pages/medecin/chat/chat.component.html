@@ -1,0 +1,211 @@
+<div class="flex flex-1 flex-col overflow-hidden h-full bg-white">
+  <!-- Header -->
+  <header class="flex flex-col h-auto shrink-0 border-b border-border-dark bg-background-dark px-8 py-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-bold text-text-dark-primary">Messages</h2>
+      </div>
+    <div class="flex flex-1 items-center justify-end gap-4">
+      <label class="relative flex min-w-40 max-w-sm flex-col">
+        <div class="flex h-10 w-full flex-1 items-stretch">
+          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <span class="material-symbols-outlined text-text-dark-primary">search</span>
+          </div>
+          <input
+            class="form-input h-full w-full min-w-0 flex-1 resize-none overflow-hidden border-2 border-border-dark bg-background-dark/50 px-4 pl-10 text-sm placeholder:text-text-dark-primary/70 text-text-dark-primary focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/20 rounded-lg transition-colors"
+            placeholder="Rechercher des patients par nom ou ID..."
+            type="text"
+          />
+        </div>
+      </label>
+      <button class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden bg-transparent hover:bg-background-dark/20">
+        <span class="material-symbols-outlined text-text-dark-primary">notifications</span>
+      </button>
+      <div
+        *ngIf="userProfile?.photoProfil"
+        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-white/20"
+        [style.background-image]="'url(' + getDocumentUrl(userProfile.photoProfil) + ')'"
+      ></div>
+      <div
+        *ngIf="!userProfile?.photoProfil"
+        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-background-dark/20 flex items-center justify-center border-2 border-white/20"
+      >
+        <span class="material-symbols-outlined text-white text-xl">person</span>
+      </div>
+    </div>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Conversations Sidebar -->
+  <aside class="flex w-80 shrink-0 flex-col border-r border-border-light dark:border-border-dark bg-white dark:bg-surface-dark">
+      <div class="flex h-full flex-col">
+      <div class="p-4 border-b border-border-light dark:border-border-dark">
+          <div class="flex items-center justify-between mb-4">
+          <h1 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Conversations</h1>
+          <span *ngIf="conversations.length > 0" class="text-sm font-medium text-text-light-primary dark:text-text-dark-primary">
+              {{ getTotalUnread() }} non lus
+            </span>
+          </div>
+          <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-light-secondary dark:text-text-dark-secondary">search</span>
+            <input
+            class="h-10 w-full border-2 border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark pl-10 pr-4 text-sm text-text-light-primary dark:text-text-dark-primary placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary rounded-lg transition-colors"
+              placeholder="Rechercher des patients..."
+              type="text"
+            />
+          </div>
+        </div>
+      <nav class="flex-1 overflow-y-auto p-2">
+          <!-- Loading State -->
+        <div *ngIf="loading && conversations.length === 0" class="text-center p-4 text-text-light-primary dark:text-text-dark-primary">
+            <p>Chargement des conversations...</p>
+          </div>
+
+          <!-- Empty State -->
+        <div *ngIf="!loading && conversations.length === 0" class="text-center p-4 text-text-light-primary dark:text-text-dark-primary">
+            <p>Aucune conversation</p>
+          </div>
+
+          <!-- Conversations List -->
+          <div
+            *ngFor="let conversation of conversations"
+            (click)="selectConversation(conversation)"
+          class="flex cursor-pointer items-center gap-3 px-3 py-3 mb-1 rounded-lg transition-colors"
+            [class.bg-background-dark/20]="selectedConversation?.utilisateurId === conversation.utilisateurId"
+          [class.hover:bg-background-light]="selectedConversation?.utilisateurId !== conversation.utilisateurId"
+          [class.dark:hover:bg-background-dark/50]="selectedConversation?.utilisateurId !== conversation.utilisateurId"
+          >
+            <div class="relative h-12 w-12 shrink-0">
+              <div class="h-full w-full rounded-full bg-cover bg-center bg-no-repeat bg-background-dark/20 flex items-center justify-center">
+                <span class="material-symbols-outlined text-text-light-primary dark:text-text-dark-primary">person</span>
+              </div>
+            <div class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white dark:border-surface-dark bg-green-500"></div>
+            </div>
+          <div class="flex-1 overflow-hidden min-w-0">
+            <div class="flex items-baseline justify-between mb-1">
+              <p class="truncate text-base font-semibold text-text-light-primary dark:text-text-dark-primary">{{ conversation.nom }}</p>
+              <p class="text-xs font-medium text-text-light-primary dark:text-text-dark-primary ml-2 shrink-0">
+                  {{ conversation.dernierMessage.dateEnvoi | date:'short' }}
+                </p>
+              </div>
+            <p class="truncate text-sm"
+               [class.text-primary]="conversation.nonLu > 0"
+               [class.font-semibold]="conversation.nonLu > 0"
+               [class.text-text-light-primary]="conversation.nonLu === 0"
+               [class./90]="conversation.nonLu === 0"
+               [class.dark:text-text-dark-primary]="conversation.nonLu === 0">
+                {{ conversation.dernierMessage.contenu }}
+              </p>
+            </div>
+          <div *ngIf="conversation.nonLu > 0" class="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-white shrink-0">
+              {{ conversation.nonLu }}
+            </div>
+          </div>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Messages Area -->
+    <main class="main-container flex flex-1 flex-col bg-background-light dark:bg-background-dark h-full">
+      <!-- No Selection -->
+    <div *ngIf="!selectedConversation" class="flex items-center justify-center flex-1 text-text-light-primary dark:text-text-dark-primary">
+        <p>Sélectionnez une conversation pour commencer</p>
+      </div>
+
+      <!-- Selected Conversation -->
+      <div *ngIf="selectedConversation" class="selected-conversation flex flex-1 flex-col overflow-hidden h-full min-h-0">
+        <!-- Conversation Header -->
+      <div class="flex h-16 shrink-0 items-center justify-between border-b border-border-light dark:border-border-dark px-6 bg-white dark:bg-surface-dark">
+          <div class="flex items-center gap-4">
+            <div class="relative h-10 w-10 shrink-0">
+              <div class="h-full w-full rounded-full bg-cover bg-center bg-no-repeat bg-background-dark/20 flex items-center justify-center">
+                <span class="material-symbols-outlined text-text-light-primary dark:text-text-dark-primary">person</span>
+              </div>
+            <div class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white dark:border-surface-dark bg-green-500"></div>
+            </div>
+            <div>
+            <h3 class="font-bold text-text-light-primary dark:text-text-dark-primary">{{ selectedConversation.nom }}</h3>
+              <p class="text-xs text-green-600 dark:text-green-400">Online</p>
+            </div>
+          </div>
+        <div class="flex items-center gap-3">
+          <button class="flex h-9 w-9 items-center justify-center hover:bg-background-light dark:hover:bg-background-dark/50 transition-colors">
+            <span class="material-symbols-outlined text-text-light-primary dark:text-text-dark-primary">videocam</span>
+          </button>
+          <button class="flex h-9 w-9 items-center justify-center hover:bg-background-light dark:hover:bg-background-dark/50 transition-colors">
+            <span class="material-symbols-outlined text-text-light-primary dark:text-text-dark-primary">call</span>
+          </button>
+          <button class="flex h-9 w-9 items-center justify-center hover:bg-background-light dark:hover:bg-background-dark/50 transition-colors">
+            <span class="material-symbols-outlined text-text-light-primary dark:text-text-dark-primary">more_vert</span>
+          </button>
+        </div>
+        </div>
+
+        <!-- Messages List -->
+        <div #messagesContainer class="messages-container flex flex-1 flex-col overflow-y-auto px-6 pt-6 pb-2 min-h-0">
+          <div class="mb-4 flex justify-center">
+          <div class="rounded-full bg-background-light dark:bg-background-dark px-3 py-1 text-xs text-text-light-primary dark:text-text-dark-primary">Today</div>
+          </div>
+        <div class="space-y-4">
+            <!-- Loading State -->
+          <div *ngIf="loading && messages.length === 0" class="text-center text-text-light-primary dark:text-text-dark-primary">
+              <p>Chargement des messages...</p>
+            </div>
+
+            <!-- Messages -->
+          <div *ngFor="let message of messages" class="flex items-end gap-3" [class.flex-row-reverse]="isMessageFromMe(message)">
+            <div *ngIf="!isMessageFromMe(message)" class="h-8 w-8 shrink-0 rounded-full bg-cover bg-center bg-no-repeat bg-background-dark/20 flex items-center justify-center">
+              <span class="material-symbols-outlined text-text-dark-secondary text-sm">person</span>
+            </div>
+              <div class="max-w-md space-y-1">
+              <div [class]="isMessageFromMe(message) ? 'bg-primary p-3 text-white shadow-sm border border-primary/30 rounded-lg' : 'bg-white dark:bg-surface-dark p-3 text-text-light-primary dark:text-text-dark-primary shadow-sm border border-border-light dark:border-border-dark rounded-lg'">
+                  <p class="text-sm">{{ message.contenu }}</p>
+              </div>
+              <p [class]="isMessageFromMe(message) ? 'text-right text-xs text-text-light-primary dark:text-text-dark-primary' : 'text-left text-xs text-text-light-primary dark:text-text-dark-primary'">
+                {{ message.dateEnvoi | date:'short' }}
+              </p>
+            </div>
+            <div *ngIf="isMessageFromMe(message)" class="h-8 w-8 shrink-0"></div>
+            </div>
+
+            <!-- Encryption Notice -->
+            <div class="flex items-center justify-center gap-2 py-2">
+              <span class="material-symbols-outlined text-sm text-green-600">lock</span>
+            <p class="text-xs text-text-light-primary dark:text-text-dark-primary">Les messages sont chiffrés de bout en bout.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message Input -->
+      <div class="message-input-container shrink-0 border-t border-border-light dark:border-border-dark bg-white dark:bg-surface-dark px-4 pt-4 pb-4">
+          <div class="flex items-center gap-3">
+          <button class="flex h-10 w-10 shrink-0 items-center justify-center hover:bg-background-light dark:hover:bg-background-dark/50 transition-colors rounded-lg">
+            <span class="material-symbols-outlined text-text-light-primary dark:text-text-dark-primary">add</span>
+          </button>
+            <div class="relative flex-1">
+              <input
+              class="h-10 w-full border-2 border-border-light dark:border-border-dark bg-transparent px-4 text-sm text-text-light-primary dark:text-text-dark-primary placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary rounded-lg"
+                placeholder="Tapez votre message ici..."
+                type="text"
+                [(ngModel)]="newMessage"
+                (keyup.enter)="sendMessage()"
+              />
+            </div>
+          <button class="flex h-10 w-10 shrink-0 items-center justify-center hover:bg-background-light dark:hover:bg-background-dark/50 transition-colors rounded-lg">
+            <span class="material-symbols-outlined text-text-light-primary dark:text-text-dark-primary">mood</span>
+          </button>
+            <button
+              (click)="sendMessage()"
+              [disabled]="!newMessage.trim() || loading"
+            class="flex h-10 w-10 shrink-0 items-center justify-center bg-primary text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors rounded-lg hover:bg-primary/90"
+            >
+            <span class="material-symbols-outlined text-base">send</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>

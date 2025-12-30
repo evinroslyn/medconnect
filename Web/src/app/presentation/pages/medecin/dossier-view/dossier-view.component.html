@@ -1,0 +1,215 @@
+<div class="relative flex min-h-screen w-full flex-col font-display bg-white text-[#0d141b] dark:text-text-dark-primary">
+  <!-- Navbar -->
+  <app-navbar
+    title="MedConnect"
+    icon="shield_lock"
+    [navItems]="navItems"
+    [showLogout]="true"
+  ></app-navbar>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+      <p class="text-lg text-text-light-primary dark:text-text-dark-primary">Chargement du dossier...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="flex items-center justify-center min-h-screen">
+    <div class="text-center max-w-md">
+      <div class="mb-4">
+        <span class="material-symbols-outlined text-6xl text-red-500 mb-4">error</span>
+      </div>
+      <p class="text-red-600 dark:text-red-400 mb-2 font-semibold">Erreur</p>
+      <p class="text-text-light-primary dark:text-text-dark-primary mb-4">{{ error }}</p>
+      <button (click)="goBack()" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+        Retour au profil
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main *ngIf="dossier && !loading && !error" class="flex flex-1">
+    <div class="w-full p-6">
+      <!-- Header -->
+      <div class="mb-6">
+        <button (click)="goBack()" class="flex items-center gap-2 text-text-light-primary dark:text-text-dark-primary hover:text-primary mb-4">
+          <span class="material-symbols-outlined">arrow_back</span>
+          <span>Retour au profil</span>
+        </button>
+        <h1 class="text-3xl font-bold text-text-light-primary dark:text-text-dark-primary mb-2">{{ dossier.titre }}</h1>
+        <p class="text-text-light-primary dark:text-text-dark-primary">{{ dossier.description || 'Aucune description' }}</p>
+        <div class="flex items-center gap-4 mt-4 text-sm text-text-light-primary dark:text-text-dark-primary">
+          <span class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">folder</span>
+            Type: {{ dossier.type || 'N/A' }}
+          </span>
+          <span class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">calendar_today</span>
+            Date: {{ dossier.date | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+
+        <!-- Permissions Info -->
+        <div class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-yellow-600 dark:text-yellow-400">info</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-1">Permissions de consultation</p>
+              <ul class="text-xs text-yellow-700 dark:text-yellow-300 space-y-1">
+                <li *ngIf="!permissions.peutTelecharger" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-base">block</span>
+                  Téléchargement désactivé
+                </li>
+                <li *ngIf="!permissions.peutScreenshot" class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-base">block</span>
+                  Capture d'écran désactivée
+                </li>
+                <li class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-base">visibility</span>
+                  Consultation en lecture seule uniquement
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documents List -->
+      <div class="bg-white dark:bg-background-dark border border-border-dark rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-border-dark">
+          <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Documents ({{ documents.length }})</h2>
+        </div>
+
+        <div *ngIf="documents.length === 0" class="px-6 py-12 text-center">
+          <span class="material-symbols-outlined text-6xl text-text-light-primary dark:text-text-dark-primary mb-4">description</span>
+          <p class="text-text-light-primary dark:text-text-dark-primary">Aucun document dans ce dossier</p>
+        </div>
+
+        <div *ngIf="documents.length > 0" class="divide-y divide-border-dark">
+          <div *ngFor="let document of documents" class="px-6 py-4 hover:bg-background-dark/50 transition-colors">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-4 flex-1">
+                <div class="flex-shrink-0">
+                  <span *ngIf="isImage(document)" class="material-symbols-outlined text-4xl text-primary">image</span>
+                  <span *ngIf="isPdf(document)" class="material-symbols-outlined text-4xl text-red-500">picture_as_pdf</span>
+                  <span *ngIf="!isImage(document) && !isPdf(document)" class="material-symbols-outlined text-4xl text-text-light-primary dark:text-text-dark-primary">description</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="font-semibold text-text-light-primary dark:text-text-dark-primary mb-1">{{ document.nom }}</h3>
+                  <p class="text-sm text-text-light-primary dark:text-text-dark-primary mb-1">Type: {{ document.type }}</p>
+                  <p class="text-xs text-text-light-primary dark:text-text-dark-primary">
+                    Créé le {{ document.dateCreation | date:'dd/MM/yyyy à HH:mm' }}
+                  </p>
+                  <p *ngIf="document.description" class="text-sm text-text-light-primary dark:text-text-dark-primary mt-1">
+                    {{ document.description }}
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <button
+                  (click)="viewDocument(document)"
+                  class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+                >
+                  <span class="material-symbols-outlined text-base">visibility</span>
+                  <span>Consulter</span>
+                </button>
+                <button
+                  (click)="openAddNoteModal(document)"
+                  class="px-4 py-2 bg-background-dark text-white rounded-lg hover:bg-background-dark/80 transition-colors flex items-center gap-2"
+                  title="Ajouter une note"
+                >
+                  <span class="material-symbols-outlined text-base">note_add</span>
+                  <span>Note</span>
+                  <span *ngIf="getCommentCount(document.id) > 0" class="ml-1 bg-background-dark/80 text-white text-xs px-2 py-0.5 rounded-full">
+                    {{ getCommentCount(document.id) }}
+                  </span>
+                </button>
+                <span *ngIf="!permissions.peutTelecharger" class="material-symbols-outlined text-text-light-primary dark:text-text-dark-primary" title="Téléchargement non autorisé">lock</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal pour ajouter et voir les notes -->
+  <div *ngIf="showCommentsModal && selectedDocumentForComment" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" (click)="closeCommentsModal()">
+    <div class="bg-white dark:bg-background-dark rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col" (click)="$event.stopPropagation()">
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-border-dark flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary">Notes sur le document</h2>
+          <p class="text-sm text-text-light-primary dark:text-text-dark-primary mt-1">{{ selectedDocumentForComment.nom }}</p>
+        </div>
+        <button
+          (click)="closeCommentsModal()"
+          class="text-text-light-primary dark:text-text-dark-primary hover:text-primary"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Liste des commentaires -->
+      <div class="flex-1 overflow-y-auto px-6 py-4">
+        <div *ngIf="loadingComments" class="text-center py-8">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-2"></div>
+          <p class="text-text-light-primary dark:text-text-dark-primary">Chargement des notes...</p>
+        </div>
+
+        <div *ngIf="!loadingComments && getDocumentComments(selectedDocumentForComment.id).length === 0" class="text-center py-8">
+          <span class="material-symbols-outlined text-4xl text-text-light-primary dark:text-text-dark-primary mb-2">note</span>
+          <p class="text-text-light-primary dark:text-text-dark-primary">Aucune note sur ce document</p>
+        </div>
+
+        <div *ngIf="!loadingComments && getDocumentComments(selectedDocumentForComment.id).length > 0" class="space-y-4">
+          <div *ngFor="let commentaire of getDocumentComments(selectedDocumentForComment.id)" class="bg-background-dark/50 rounded-lg p-4">
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-text-light-primary dark:text-text-dark-primary">
+                  {{ commentaire.medecinNom || 'Médecin' }}
+                </p>
+                <p class="text-xs text-text-light-primary dark:text-text-dark-primary">
+                  {{ commentaire.dateCreation | date:'dd/MM/yyyy à HH:mm' }}
+                </p>
+              </div>
+              <button
+                (click)="deleteComment(commentaire.id, selectedDocumentForComment.id)"
+                class="text-red-500 hover:text-red-700 dark:hover:text-red-400"
+                title="Supprimer la note"
+              >
+                <span class="material-symbols-outlined text-base">delete</span>
+              </button>
+            </div>
+            <p class="text-sm text-text-light-primary dark:text-text-dark-primary whitespace-pre-wrap">{{ commentaire.contenu }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulaire d'ajout de note -->
+      <div class="px-6 py-4 border-t border-border-dark bg-background-dark/50">
+        <div class="flex items-start gap-3">
+          <div class="flex-1">
+            <textarea
+              [(ngModel)]="newCommentText"
+              placeholder="Ajouter une note sur ce document..."
+              class="w-full px-4 py-2 border border-border-dark rounded-lg bg-white dark:bg-background-dark text-text-light-primary dark:text-text-dark-primary placeholder:text-text-light-primary/70 dark:placeholder:text-text-dark-primary/70 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+              rows="3"
+            ></textarea>
+          </div>
+          <button
+            (click)="addComment()"
+            [disabled]="!newCommentText.trim() || addingComment"
+            class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            <span *ngIf="addingComment" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+            <span *ngIf="!addingComment" class="material-symbols-outlined text-base">send</span>
+            <span *ngIf="!addingComment">Ajouter</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

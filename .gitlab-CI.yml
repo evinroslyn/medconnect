@@ -1,0 +1,21 @@
+stages:
+  - ci
+
+angular_ci:
+  stage: ci
+  image: node:20
+
+  rules:
+    # Exécute le job si le frontend change
+    - changes:
+        - Web/**/*
+        - .gitlab-ci.yml
+      when: always
+    - when: never
+
+  before_script:
+    - cd Web
+
+  script:
+    - echo "📦 Installation des dépendances"
+    - npm install

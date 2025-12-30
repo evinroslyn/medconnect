@@ -1,0 +1,38 @@
+name: Angular CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'Web/**'
+      - '.github/workflows/frontend.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'Web/**'
+      - '.github/workflows/frontend.yml'
+
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./Web
+        
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Installation des dépendances
+        run: npm install
+
+      

@@ -1,0 +1,171 @@
+<div class="flex flex-1 flex-col overflow-y-auto bg-white">
+  <!-- Header -->
+  <header class="flex flex-col h-auto shrink-0 border-b border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-8 py-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-bold text-text-light-primary dark:text-text-dark-primary">Mon Profil</h2>
+        <p class="text-sm text-text-light-primary/80 dark:text-text-dark-primary/80 mt-1">Gérez vos informations personnelles et professionnelles</p>
+      </div>
+    <div class="flex flex-1 items-center justify-end gap-4">
+      <button class="flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden bg-transparent hover:bg-background-dark/20">
+        <span class="material-symbols-outlined text-text-light-primary dark:text-text-dark-primary">notifications</span>
+      </button>
+      <div 
+        *ngIf="userProfile?.photoProfil"
+        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-white/20"
+        [style.background-image]="'url(' + getDocumentUrl(userProfile.photoProfil) + ')'"
+      ></div>
+      <div 
+        *ngIf="!userProfile?.photoProfil"
+        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-background-dark/20 flex items-center justify-center border-2 border-white/20"
+      >
+        <span class="material-symbols-outlined text-white text-xl">person</span>
+      </div>
+    </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8">
+    <!-- Tabs -->
+    <div class="mb-6 border-b border-border-light dark:border-border-dark">
+      <div class="flex gap-4">
+        <button
+          (click)="setActiveTab('profile')"
+          [class]="activeTab === 'profile' ? 'border-b-2 border-primary text-primary font-medium' : 'text-text-light-primary dark:text-text-dark-primary'"
+          class="px-4 py-2 text-sm"
+        >
+          Informations Personnelles
+        </button>
+        <button
+          (click)="setActiveTab('password')"
+          [class]="activeTab === 'password' ? 'border-b-2 border-primary text-primary font-medium' : 'text-text-light-primary dark:text-text-dark-primary'"
+          class="px-4 py-2 text-sm"
+        >
+          Mot de Passe
+        </button>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+      <p class="text-sm text-red-800 dark:text-red-200">{{ error }}</p>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="success" class="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+      <p class="text-sm text-green-800 dark:text-green-200">{{ success }}</p>
+    </div>
+
+    <!-- Profile Tab -->
+    <div *ngIf="activeTab === 'profile'" class="max-w-2xl">
+      <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-6">Informations Personnelles</h3>
+      <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Nom</label>
+            <input
+              type="text"
+              formControlName="nom"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Email</label>
+            <input
+              type="email"
+              formControlName="mail"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Téléphone</label>
+            <input
+              type="tel"
+              formControlName="telephone"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Spécialité</label>
+            <input
+              type="text"
+              formControlName="specialite"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Numéro de Licence</label>
+            <input
+              type="text"
+              formControlName="numeroLicence"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Adresse</label>
+            <input
+              type="text"
+              formControlName="adresse"
+              class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button
+            type="submit"
+            [disabled]="profileForm.invalid || loading"
+            class="px-6 py-2 bg-primary text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {{ loading ? 'Mise à jour...' : 'Enregistrer les modifications' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Password Tab -->
+    <div *ngIf="activeTab === 'password'" class="max-w-2xl">
+      <h3 class="text-xl font-bold text-text-light-primary dark:text-text-dark-primary mb-6">Modifier le Mot de Passe</h3>
+      <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()" class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Mot de Passe Actuel</label>
+          <input
+            type="password"
+            formControlName="currentPassword"
+            class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Nouveau Mot de Passe</label>
+          <input
+            type="password"
+            formControlName="newPassword"
+            class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+          <p class="mt-1 text-xs text-text-light-primary dark:text-text-dark-primary">Minimum 8 caractères</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-text-light-primary dark:text-text-dark-primary mb-2">Confirmer le Nouveau Mot de Passe</label>
+          <input
+            type="password"
+            formControlName="confirmPassword"
+            class="w-full border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark px-4 py-2 text-text-light-primary dark:text-text-dark-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+          <p *ngIf="passwordForm.get('confirmPassword')?.hasError('passwordMismatch')" class="mt-1 text-xs text-red-600 dark:text-red-400">
+            Les mots de passe ne correspondent pas
+          </p>
+        </div>
+        <div class="flex gap-3">
+          <button
+            type="submit"
+            [disabled]="passwordForm.invalid || loading"
+            class="px-6 py-2 bg-primary text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {{ loading ? 'Modification...' : 'Modifier le Mot de Passe' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+

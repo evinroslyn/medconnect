@@ -1,0 +1,45 @@
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  min-height: 0;
+}
+
+// S'assurer que le conteneur principal prend toute la hauteur
+.main-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+// Zone de conversation sélectionnée
+.selected-conversation {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+// Zone de messages - doit prendre tout l'espace disponible
+.messages-container {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+// Zone de saisie - doit être collée en bas
+.message-input-container {
+  flex-shrink: 0;
+  margin-bottom: 0 !important;
+  padding-bottom: 1rem;
+  margin-top: 0 !important;
+}
+

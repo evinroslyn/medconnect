@@ -1,0 +1,82 @@
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-dark px-4 py-3 bg-background-dark sticky top-0 z-10">
+  <h2 class="text-text-dark-primary text-xl font-bold leading-tight tracking-[-0.015em]">User Management</h2>
+  <div class="flex flex-1 justify-end gap-4 items-center">
+    <label class="relative flex-col min-w-40 !h-10 max-w-sm hidden md:flex">
+      <span class="material-symbols-outlined text-text-dark-secondary absolute left-3 top-1/2 -translate-y-1/2">search</span>
+      <input 
+        [(ngModel)]="searchTerm"
+        class="form-input w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-dark-primary focus:outline-0 focus:ring-2 focus:ring-primary/50 border-border-dark bg-background-dark/50 h-full placeholder:text-text-dark-secondary pl-10 pr-4 text-sm font-normal leading-normal" 
+        placeholder="Search users..." 
+        type="text"
+      />
+    </label>
+    <button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-transparent text-text-dark-secondary hover:bg-background-dark/20 hover:text-primary transition-colors">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-background-dark/20"></div>
+  </div>
+</header>
+
+<div class="p-4 flex-1">
+  <div class="max-w-7xl mx-auto">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center p-8 text-text-dark-secondary">
+      <p>Chargement des utilisateurs...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="rounded-md bg-red-50 dark:bg-red-900/20 p-4 mb-6">
+      <p class="text-sm text-red-800 dark:text-red-200">{{ error }}</p>
+    </div>
+
+    <!-- Users List -->
+    <div class="rounded-xl border border-border-dark bg-white dark:bg-background-dark/50 overflow-hidden">
+      <table class="w-full">
+        <thead class="bg-background-dark">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-dark-primary uppercase tracking-wider">NOM</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-dark-primary uppercase tracking-wider">EMAIL</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-dark-primary uppercase tracking-wider">TYPE</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-dark-primary uppercase tracking-wider">DATE DE CRÉATION</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-text-dark-primary uppercase tracking-wider">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-background-dark/30 divide-y divide-border-dark">
+          <tr *ngFor="let user of users" class="hover:bg-background-dark/10 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-dark-primary">{{ user.nom || user.mail?.split('@')[0] || 'N/A' }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-dark-secondary">{{ user.mail }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+                [class.bg-background-dark/20]="user.typeUtilisateur === 'patient'"
+                [class.text-text-dark-primary]="user.typeUtilisateur === 'patient'"
+                [class.bg-green-100]="user.typeUtilisateur === 'medecin'"
+                [class.text-green-800]="user.typeUtilisateur === 'medecin'"
+                [class.dark:bg-green-900/30]="user.typeUtilisateur === 'medecin'"
+                [class.dark:text-green-400]="user.typeUtilisateur === 'medecin'"
+                [class.bg-purple-100]="user.typeUtilisateur === 'administrateur'"
+                [class.text-purple-800]="user.typeUtilisateur === 'administrateur'"
+                [class.dark:bg-purple-900/30]="user.typeUtilisateur === 'administrateur'"
+                [class.dark:text-purple-400]="user.typeUtilisateur === 'administrateur'">
+                {{ user.typeUtilisateur }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-text-dark-secondary">{{ user.dateCreation | date:'short' }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <button 
+                (click)="deleteUser(user.id)"
+                class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium">
+                Supprimer
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && users.length === 0" class="text-center p-8 text-text-dark-secondary">
+        <p>Aucun utilisateur trouvé</p>
+      </div>
+    </div>
+  </div>
+</div>
+
